@@ -3,9 +3,11 @@ pragma solidity ^0.8.13;
 
 import {Script, console} from "forge-std/Script.sol";
 import "../src/BondingCurve.sol";
+
 contract BondingCurveScript is Script {
     BondingCurve public bondingCurve;
     SuperPull public superPull;
+
     function setUp() public {}
 
     function run() public {

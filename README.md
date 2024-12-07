@@ -28,18 +28,6 @@ $ forge build
 $ forge test
 ```
 
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
 ### Anvil
 
 Anvil is a local Ethereum node implemented in Rust, similar to Ganache or Hardhat Network. It allows you to set up a local Ethereum blockchain for development and testing purposes.
@@ -84,11 +72,21 @@ Replace `tokenAmount` with the amount of tokens you wish to sell.
 
 ### Checking Token Price
 
-To get the current price per token based on the bonding curve:
+To get the cost of buying a specific amount of tokens based on the bonding curve:
 
 ```solidity
-uint256 currentPrice = bondingCurve.getCurrentPrice();
+uint256 cost = bondingCurve.buyPrice(amount);
 ```
+
+Replace `amount` with the number of tokens you want to buy.
+
+To calculate the revenue from selling a specific amount of tokens:
+
+```solidity
+uint256 revenue = bondingCurve.sellPrice(amount);
+```
+
+Replace `amount` with the number of tokens you wish to sell.
 
 ### Retrieving Total Supply
 
@@ -118,4 +116,36 @@ const price = await bondingCurveContract.getCurrentPrice();
 // Getting total supply
 const supply = await bondingCurveContract.totalSupply();
 ```
+
+## Contract Functions
+
+Below are all the functions provided by the `BondingCurve` contract along with their descriptions:
+
+- **`buyPrice(uint256 amount) public view returns (uint256)`**
+
+  Calculates the cost in Ether to buy a specific `amount` of tokens based on the bonding curve pricing formula.
+
+- **`sellPrice(uint256 amount) public view returns (uint256)`**
+
+  Calculates the revenue in Ether from selling a specific `amount` of tokens back to the bonding curve.
+
+- **`buy(uint256 amount) external payable`**
+
+  Allows users to purchase a specific `amount` of tokens. Users must send enough Ether to cover the cost calculated by `buyPrice(amount)`. Any excess Ether sent will be refunded.
+
+- **`sell(uint256 amount) external`**
+
+  Allows users to sell a specific `amount` of tokens back to the bonding curve in exchange for Ether. The Ether amount received is calculated using `sellPrice(amount)`.
+
+- **`withdrawReserve(uint256 amount) external onlyOwner`**
+
+  Enables the contract owner to withdraw a specific `amount` of Ether from the contract's reserve.
+
+- **`receive() external payable`**
+
+  Fallback function to accept Ether sent directly to the contract. Increases the contract's reserve balance.
+
+## Disclaimer
+
+**Note:** This smart contract has not been audited. Use it at your own risk.
 

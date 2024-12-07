@@ -22,18 +22,14 @@ contract BondingCurve is Ownable {
     function buyPrice(uint256 amount) public view returns (uint256) {
         uint256 currentSupply = superPull.totalSupply();
         uint256 newSupply = currentSupply + amount;
-        return
-            ((newSupply * newSupply - currentSupply * currentSupply) / 2) *
-            INITIAL_PRICE_DIVIDER;
+        return ((newSupply * newSupply - currentSupply * currentSupply) / 2) * INITIAL_PRICE_DIVIDER;
     }
 
     function sellPrice(uint256 amount) public view returns (uint256) {
         uint256 currentSupply = superPull.totalSupply();
         require(amount <= currentSupply, "Not enough tokens to sell");
         uint256 newSupply = currentSupply - amount;
-        return
-            ((currentSupply * currentSupply - newSupply * newSupply) / 2) *
-            INITIAL_PRICE_DIVIDER;
+        return ((currentSupply * currentSupply - newSupply * newSupply) / 2) * INITIAL_PRICE_DIVIDER;
     }
 
     function buy(uint256 amount) external payable {
@@ -44,12 +40,12 @@ contract BondingCurve is Ownable {
         superPull.transfer(msg.sender, amount);
 
         emit Bought(amount, cost);
-        
+
         // Refund excess ETH
         if (msg.value > cost) {
             payable(msg.sender).transfer(msg.value - cost);
         }
-    } 
+    }
 
     function sell(uint256 amount) external {
         uint256 revenue = sellPrice(amount);

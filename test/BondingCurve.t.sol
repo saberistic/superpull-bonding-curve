@@ -30,16 +30,16 @@ contract BondingCurveTest is Test {
     // Allow the contract to receive ETH
     receive() external payable {}
 
-    /** 
+    /**
      * @notice Test the initial state of the BondingCurve contract
      */
     function testInitialState() public view {
-        assertEq(address(bondingCurve.superPull()),  address(superPull), "Token address mismatch");
+        assertEq(address(bondingCurve.superPull()), address(superPull), "Token address mismatch");
         assertEq(bondingCurve.reserve(), 0, "Initial reserve should be zero");
         assertEq(superPull.balanceOf(address(bondingCurve)), 500 * (10 ** 18), "Initial token reserve mismatch");
     }
 
-    /** 
+    /**
      * @notice Test buying tokens with sufficient ETH
      */
     function testBuyTokens() public {
@@ -58,7 +58,7 @@ contract BondingCurveTest is Test {
         // assertEq(user1.balance, 1 ether - cost, "User1 ETH balance incorrect");
     }
 
-    /** 
+    /**
      * @notice Test buying tokens with insufficient ETH
      */
     function testBuyTokensInsufficientETH() public {
@@ -74,7 +74,7 @@ contract BondingCurveTest is Test {
         bondingCurve.buy{value: cost - 1 ether}(amountToBuy);
     }
 
-    /** 
+    /**
      * @notice Test selling tokens with sufficient reserve
      */
     function testSellTokens() public {
@@ -103,7 +103,7 @@ contract BondingCurveTest is Test {
         assertEq(user1.balance, revenue, "User1 ETH balance should have increased by revenue");
     }
 
-    /** 
+    /**
      * @notice Test selling tokens with insufficient reserve
      */
     function testSellTokensInsufficientReserve() public {
@@ -132,7 +132,7 @@ contract BondingCurveTest is Test {
         bondingCurve.sell(amountToBuy);
     }
 
-    /** 
+    /**
      * @notice Test withdrawing reserve by the owner
      */
     function testWithdrawReserve() public {
@@ -153,7 +153,7 @@ contract BondingCurveTest is Test {
         // assertEq(owner.balance, withdrawAmount, "Owner's ETH balance incorrect after withdrawal");
     }
 
-    /** 
+    /**
      * @notice Test non-owner attempting to withdraw reserve
      */
     function testNonOwnerWithdrawReserve() public {
@@ -165,7 +165,7 @@ contract BondingCurveTest is Test {
         bondingCurve.withdrawReserve(withdrawAmount);
     }
 
-    /** 
+    /**
      * @notice Test selling more tokens than total supply
      */
     function testSellMoreThanSupply() public {
@@ -177,7 +177,7 @@ contract BondingCurveTest is Test {
         bondingCurve.sell(amountToSell);
     }
 
-    /** 
+    /**
      * @notice Test buying and selling multiple times to ensure reserve consistency
      */
     function testMultipleBuySellOperations() public {
@@ -219,7 +219,7 @@ contract BondingCurveTest is Test {
         assertEq(bondingCurve.reserve(), expectedReserve, "Reserve after second sell incorrect");
     }
 
-    /** 
+    /**
      * @notice Test that contract can receive ETH directly
      */
     function testReceiveETH() public {
@@ -228,7 +228,7 @@ contract BondingCurveTest is Test {
         // Send ETH directly to the contract
         vm.deal(user1, ethSent);
         vm.prank(user1);
-        (bool sent, ) = address(bondingCurve).call{value: ethSent}("");
+        (bool sent,) = address(bondingCurve).call{value: ethSent}("");
         require(sent, "Failed to send ETH");
 
         // Assertions
@@ -236,7 +236,7 @@ contract BondingCurveTest is Test {
         assertEq(address(bondingCurve).balance, ethSent, "Contract's ETH balance incorrect");
     }
 
-    /** 
+    /**
      * @notice Test that excess ETH is refunded when buying tokens
      */
     function testBuyTokensWithExcessETH() public {
